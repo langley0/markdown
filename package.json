@@ -1,0 +1,23 @@
+{
+  "name": "markdown",
+  "version": "1.0.0",
+  "description": "markdown compiler with typescript",
+  "scripts": {
+    "lint": "eslint src/**",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "markdown",
+    "typescript"
+  ],
+  "author": "langley0@naver.com",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.1.0",
+    "eslint": "^7.9.0",
+    "eslint-config-airbnb-typescript": "^10.0.0",
+    "eslint-plugin-import": "^2.22.0",
+    "typescript": "^4.0.2"
+  }
+}

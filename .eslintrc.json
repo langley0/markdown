@@ -1,0 +1,16 @@
+{
+    "extends": [
+        "airbnb-typescript/base"
+    ],
+    "parserOptions": {
+        "project": "tsconfig.json"
+    },
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "rules": {
+        "no-plusplus": ["error", {
+            "allowForLoopAfterthoughts": true
+        }]
+    }
+}
