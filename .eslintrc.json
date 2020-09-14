@@ -9,8 +9,6 @@
         "@typescript-eslint"
     ],
     "rules": {
-        "no-plusplus": ["error", {
-            "allowForLoopAfterthoughts": true
-        }]
+        "no-plusplus": 0
     }
 }
