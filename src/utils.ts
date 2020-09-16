@@ -59,8 +59,49 @@ function countChar(src: string, c: string, index: number): number {
   return count;
 }
 
+const escapeTest = /[&<>"']/;
+const escapeReplace = /[&<>"']/g;
+const escapeTestNoEncode = /[<>"']|&(?!#?\w+;)/;
+const escapeReplaceNoEncode = /[<>"']|&(?!#?\w+;)/g;
+const escapeReplacements: { [key:string]: string } = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+};
+const getEscapeReplacement = (ch: string) => escapeReplacements[ch];
+function escape(src: string, encode?: string) {
+  if (encode) {
+    if (escapeTest.test(src)) {
+      return src.replace(escapeReplace, getEscapeReplacement);
+    }
+  } else if (escapeTestNoEncode.test(src)) {
+    return src.replace(escapeReplaceNoEncode, getEscapeReplacement);
+  }
+
+  return src;
+}
+
+const unescapeTest = /&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/ig;
+function unescape(src: string) {
+  // explicitly match decimal, hex, and named HTML entities
+  return src.replace(unescapeTest, (_, _n) => {
+    const n = _n.toLowerCase();
+    if (n === 'colon') return ':';
+    if (n.charAt(0) === '#') {
+      return n.charAt(1) === 'x'
+        ? String.fromCharCode(parseInt(n.substring(2), 16))
+        : String.fromCharCode(+n.substring(1));
+    }
+    return '';
+  });
+}
+
 export {
   findClosingBracket,
   rtrim,
   countChar,
+  escape,
+  unescape,
 };
