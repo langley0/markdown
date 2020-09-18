@@ -1,4 +1,4 @@
-[Hashcash]
+[Hashcash]test
 [none]
 
 

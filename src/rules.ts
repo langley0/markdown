@@ -257,6 +257,18 @@ const block: RuleSet = {
       args: [],
     };
   },
+
+  def: (src: string): RuleResult | null => {
+    const rule = /^ {0,3}\[(?!\s*\])([^[\]]+)\]: *\n? *([\s\S]*)(?=\n+|$)/;
+    const result = rule.exec(src);
+    if (result !== null) {
+      return {
+        raw: result[0],
+        args: [result[1], result[2]],
+      };
+    }
+    return null;
+  },
 };
 
 const inline: RuleSet = {
@@ -315,6 +327,36 @@ const inline: RuleSet = {
       };
     }
 
+    return null;
+  },
+
+  reflink: (origin: string): RuleResult | null => {
+    let src = origin;
+    let isImage = false;
+    if (src[0] === '!') {
+      src = src.substring(1);
+      isImage = true;
+    }
+
+    if (src[0] !== '[') {
+      return null;
+    }
+
+    src = src.substring(1);
+    const titleEnd = findClosingBracket(src, '[]');
+    if (titleEnd < 0) {
+      return null;
+    }
+
+    const title = src.substring(0, titleEnd);
+
+    const titleRule = /^\s*!?\[[^[\]\\]*\]|`[^`]*`|[^[\]\\`]*?\s*/;
+    if (titleRule.test(title)) {
+      return {
+        raw: origin.substring(0, 2 + titleEnd + (isImage ? 1 : 0)),
+        args: [title],
+      };
+    }
     return null;
   },
 
@@ -387,3 +429,5 @@ export {
   inline,
   RuleSet,
 };
+
+TODO: def 가 뒤에 엔터를 인식하지 못한다. 엔터를 인식할 수 있도록 룰을 수정해야 한다

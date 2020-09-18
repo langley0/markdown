@@ -163,8 +163,19 @@ export function html(src: string): Token | null {
   return null;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function def(_src: string): Token | null {
+export function def(src: string): Token | null {
+  const result = block.def(src);
+  if (result !== null) {
+    return {
+      type: 'def',
+      raw: result.raw,
+      text: result.args[0],
+      children: [],
+      options: {
+        href: result.args[1],
+      },
+    };
+  }
   return null;
 }
 
@@ -346,11 +357,24 @@ export function inlineText(src: string): Token | null {
   return null;
 }
 
+export function reflink(src: string): Token | null {
+  const result = inline.reflink(src);
+  if (result !== null) {
+    return {
+      type: 'reflink',
+      raw: result.raw,
+      text: result.args[0],
+      children: [],
+    };
+  }
+  return null;
+}
+
 export function nextInlineToken(src: string): Token | null {
   return escape(src)
   // || tag
   || link(src)
-  // || reflink
+  || reflink(src)
   || strongem(src)
   || strong(src)
   || em(src)

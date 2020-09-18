@@ -12,10 +12,12 @@ export type TokenType = 'newline'
 | 'strong'
 | 'em'
 | 'link'
+| 'reflink'
 | 'image'
 | 'codespan'
 | 'escape'
 | 'html'
+| 'def'
 | 'null';
 
 export interface Token {
