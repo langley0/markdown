@@ -8,11 +8,14 @@ export type TokenType = 'newline'
 | 'blockquote'
 | 'text'
 | 'table'
+| 'strongem'
 | 'strong'
 | 'em'
 | 'link'
+| 'image'
 | 'codespan'
 | 'escape'
+| 'html'
 | 'null';
 
 export interface Token {
@@ -29,5 +32,6 @@ export interface Token {
       items: { raw: string, children: Token[] } [],
     },
     depth?: number,
+    href?: string,
   }
 }

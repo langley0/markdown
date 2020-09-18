@@ -150,6 +150,19 @@ export function list(src: string): Token | null {
   return null;
 }
 
+export function html(src: string): Token | null {
+  const result = block.html(src);
+  if (result !== null) {
+    return {
+      type: 'html',
+      raw: result.raw,
+      text: result.raw,
+      children: [],
+    };
+  }
+  return null;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function def(_src: string): Token | null {
   return null;
@@ -219,6 +232,7 @@ export function nextBlockToken(src: string, tokens: Token[]): Token | null {
     || hr(src)
     || blockquote(src)
     || list(src)
+    || html(src)
     || def(src)
     || table(src)
     || lheading(src)
@@ -242,13 +256,25 @@ export function escape(src: string): Token | null {
 export function link(src: string): Token | null {
   const result = inline.link(src);
   if (result !== null) {
+    if (result.raw[0] === '!') {
+      return {
+        type: 'image',
+        raw: result.raw,
+        text: result.args[0],
+        children: [],
+        options: {
+          href: result.args[1],
+        },
+      };
+    }
     return {
       type: 'link',
       raw: result.raw,
       text: result.args[0],
-      // TODO : 레퍼런스를 어떻게 표현해야할까
-      // reference : result.args[1],
       children: [],
+      options: {
+        href: result.args[1],
+      },
     };
   }
   return null;
@@ -284,17 +310,10 @@ export function strongem(src: string): Token | null {
   const result = inline.strongem(src);
   if (result !== null) {
     return {
-      type: 'strong',
+      type: 'strongem',
       raw: result.raw,
-      text: '',
-      children: [
-        {
-          type: 'em',
-          raw: result.raw.substring(2, result.raw.length - 2),
-          text: result.args[0],
-          children: [],
-        },
-      ],
+      text: result.args[0],
+      children: [],
     };
   }
   return null;
@@ -313,6 +332,20 @@ export function codespan(src: string): Token | null {
   return null;
 }
 
+export function inlineText(src: string): Token | null {
+  const result = inline.text(src);
+  if (result !== null) {
+    // escape 를 해야할지는 문장결과를 보고 판단
+    return {
+      type: 'text',
+      raw: result.raw,
+      text: result.raw,
+      children: [],
+    };
+  }
+  return null;
+}
+
 export function nextInlineToken(src: string): Token | null {
   return escape(src)
   // || tag
@@ -323,6 +356,6 @@ export function nextInlineToken(src: string): Token | null {
   || em(src)
   || codespan(src)
   // autolink(url)
-  // text
+  || inlineText(src)
   || null;
 }

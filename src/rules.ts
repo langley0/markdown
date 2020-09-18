@@ -1,4 +1,4 @@
-// import { countChar } from './utils';
+import { findClosingBracket } from './utils';
 
 interface RuleResult {
   raw: string,
@@ -29,6 +29,18 @@ const block: RuleSet = {
       raw: src.substring(0, i),
       args: [],
     };
+  },
+
+  html: (src: string): RuleResult | null => {
+    const rule = /^ {0,3}<([\w-]*)(?: +[\w.:-]*(?: *= *"[^"\n]*"| *= *'[^'\n]*'))*? *\/?>[\s\S]*?(?:\n{2,}|$)/;
+    const result = rule.exec(src);
+    if (result !== null) {
+      return {
+        raw: result[0],
+        args: [],
+      };
+    }
+    return null;
   },
 
   // 공백 4개로 시작하는 라인은 코드블럭이다.
@@ -213,7 +225,8 @@ const block: RuleSet = {
         || block.lheading(src)
         || block.blockquote(src)
         || block.fences(src)
-        || block.list(src);
+        || block.list(src)
+        || block.html(src);
 
       if (next !== null) { break; }
       const found = src.indexOf('\n');
@@ -260,16 +273,48 @@ const inline: RuleSet = {
     };
   },
 
-  link: (src: string): RuleResult | null => {
-    // eslint-disable-next-line no-control-regex
-    const rule = /^!?\[([\s\S]*)\]\(\s*([^\s\x00-\x1f]*)\s*\)/;
-    const result = rule.exec(src);
-    if (result !== null) {
+  link: (origin: string): RuleResult | null => {
+    let src = origin;
+    let isImage = false;
+    if (src[0] === '!') {
+      src = src.substring(1);
+      isImage = true;
+    }
+
+    if (src[0] !== '[') {
+      return null;
+    }
+
+    src = src.substring(1);
+    const titleEnd = findClosingBracket(src, '[]');
+    if (titleEnd < 0) {
+      return null;
+    }
+
+    const title = src.substring(0, titleEnd);
+    src = src.substring(1 + titleEnd);
+    if (src[0] !== '(') {
+      return null;
+    }
+
+    src = src.substring(1);
+    const hrefEnd = findClosingBracket(src, '()');
+    if (hrefEnd < 0) {
+      return null;
+    }
+
+    const href = src.substring(0, hrefEnd);
+
+    // title 과 href 의 룰을 확인한다
+    const titleRule = /^\s*!?\[[^[\]\\]*\]|`[^`]*`|[^[\]\\`]*?\s*/;
+    const hrefRule = /^\s*[^\s<>\\]*\s*/;
+    if (titleRule.test(title) && hrefRule.test(href)) {
       return {
-        raw: result[0],
-        args: [result[1], result[2]],
+        raw: origin.substring(0, 4 + titleEnd + hrefEnd + (isImage ? 1 : 0)),
+        args: [title, href],
       };
     }
+
     return null;
   },
 
@@ -315,6 +360,21 @@ const inline: RuleSet = {
       return {
         raw: result[0],
         args: [result[2]],
+      };
+    }
+    return null;
+  },
+
+  text: (src: string): RuleResult | null => {
+    // 특수기호 \, < , !, `, * 그리고 단어앞에 사용되는 _ 등장할때까지 인식한다
+    // 예외적으로 `로 단어 제일 처음에 단독으로 쓰였을때에는 문장에포함시킨다.
+    // 앞에서 코드스팬 검사를 먼저 하여야 하는 이유이다.
+    const rule = /^(`+|[^`])(?:[\s\S]*?(?:(?=[\\<![`*]|\b_|$)))/;
+    const result = rule.exec(src);
+    if (result !== null) {
+      return {
+        raw: result[0],
+        args: [],
       };
     }
     return null;
