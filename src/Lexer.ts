@@ -66,6 +66,7 @@ function inlineTokens(origin: string, tokens: Token[], links: Link[]): Token[] {
       } else {
         // 평범한 text 로 변경한다
         token.type = 'text';
+        token.text = token.raw;
       }
       tokens.push(token);
     } else if (token.type === 'strong' || token.type === 'em' || token.type === 'strongem') {
@@ -144,6 +145,14 @@ function compress(tokens: Token[]): Token[] {
       });
     }
 
+    if (token.type === 'link') {
+      if (token.children.length === 1
+        && token.children[0].type === 'text') {
+        // 링크가 단순 텍스트의 단일 문장일 경우에는 text 토큰을 차일드로 가지지 않아도 된다.
+        token.children = [];
+      }
+    }
+
     token.children = compress(token.children);
   }
 
@@ -157,7 +166,7 @@ function post(tokens: Token[]) {
     if (token.type === 'text'
     || token.type === 'strong'
     || token.type === 'em') {
-      token.text = token.text.replace('\n', ' ').trim();
+      token.text = token.text.replace(/\n/gm, ' ').trim();
     }
     post(token.children);
   }
@@ -169,15 +178,3 @@ export default function lex(src: string): Token[] {
   inline(tokens, links);
   return post(tokens);
 }
-
-console.log(lex(`[Hashcash]test
-[none]
-
-
-[Hashcash]: https://en.wikipedia.org/wiki/Hashcash
-
-
-*test*
-test
-test2
-`));

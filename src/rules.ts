@@ -259,7 +259,7 @@ const block: RuleSet = {
   },
 
   def: (src: string): RuleResult | null => {
-    const rule = /^ {0,3}\[(?!\s*\])([^[\]]+)\]: *\n? *([\s\S]*)(?=\n+|$)/;
+    const rule = /^ {0,3}\[(?!\s*\])([^[\]]+)\]: *\n? *([^\s]+)(?:\n+|$)/;
     const result = rule.exec(src);
     if (result !== null) {
       return {
@@ -429,5 +429,3 @@ export {
   inline,
   RuleSet,
 };
-
-TODO: def 가 뒤에 엔터를 인식하지 못한다. 엔터를 인식할 수 있도록 룰을 수정해야 한다
