@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 import * as fs from 'fs';
 import lex from './Lexer';
-import printToken from './debug';
 
 describe('lexer test', () => {
   test('default', (done) => {
