@@ -151,6 +151,10 @@ function compress(tokens: Token[]): Token[] {
   return tokens;
 }
 
+function pre(src: string): string {
+  return src.replace(/\r\n/g, '\n').replace(/\t/g, '  ');
+}
+
 function post(tokens: Token[]) {
   const compressed = compress(tokens);
   for (let i = 0; i < compressed.length; i++) {
@@ -165,7 +169,8 @@ function post(tokens: Token[]) {
   return tokens;
 }
 
-export default function lex(src: string): Token[] {
+export default function lex(origin: string): Token[] {
+  const src = pre(origin);
   const [tokens, links] = block(src, [], true);
   inline(tokens, links);
   return post(tokens);
