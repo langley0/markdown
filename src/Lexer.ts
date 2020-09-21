@@ -145,14 +145,6 @@ function compress(tokens: Token[]): Token[] {
       });
     }
 
-    if (token.type === 'link') {
-      if (token.children.length === 1
-        && token.children[0].type === 'text') {
-        // 링크가 단순 텍스트의 단일 문장일 경우에는 text 토큰을 차일드로 가지지 않아도 된다.
-        token.children = [];
-      }
-    }
-
     token.children = compress(token.children);
   }
 
