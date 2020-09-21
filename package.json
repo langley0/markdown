@@ -12,7 +12,9 @@
   ],
   "author": "langley0@naver.com",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "react-syntax-highlighter": "^13.5.3"
+  },
   "devDependencies": {
     "@types/jest": "^26.0.13",
     "@typescript-eslint/eslint-plugin": "^4.1.0",
