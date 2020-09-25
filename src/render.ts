@@ -18,7 +18,7 @@ export default function render(tokens: Token[], indent: string = ''): string {
         ? hljs.highlight(token.options!.language, token.text).value
         : hljs.highlightAuto(token.text).value;
 
-      return `${indent}<pre><code>\n${highlightedCode}\n${indent}</code></pre>`;
+      return `${indent}<pre>\n${highlightedCode}\n${indent}</pre>`;
     }
     if (token.type === 'codespan') {
       return `${indent}<code>${renderContent(token)}</code>`;
