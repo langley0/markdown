@@ -40,10 +40,10 @@ export default function render(tokens: Token[], indent: string = ''): string {
       return `${indent}${token.text}`;
     }
     if (token.type === 'link') {
-      return `${indent}<a href="${token.options!.href} rel="nofollow">${renderContent(token)}</a>`;
+      return `${indent}<a href="${token.options!.href}" rel="nofollow">${renderContent(token)}</a>`;
     }
     if (token.type === 'image') {
-      return `${indent}<img src="${token.options!.href} alt="${token.text}"/>`;
+      return `${indent}<img src="${token.options!.href}" alt="${token.text}"/>`;
     }
     if (token.type === 'paragraph') {
       return `${indent}<p>${renderContent(token)}</p>`;
@@ -60,7 +60,7 @@ export default function render(tokens: Token[], indent: string = ''): string {
       }\n${indent}</${tag}>`;
     }
     if (token.type === 'text') {
-      return `${indent}"${token.text}"`;
+      return `${indent}${token.text}`;
     }
     throw new Error(`invalid token type :${token.type}`);
   });
