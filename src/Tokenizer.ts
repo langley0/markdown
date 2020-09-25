@@ -49,7 +49,7 @@ export function fences(src: string): Token | null {
       text: result.args[2].trimRight(),
       children: [],
       options: {
-        language: result.args[1],
+        language: result.args[1].trim(),
       },
     };
   }

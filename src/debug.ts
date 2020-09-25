@@ -2,6 +2,7 @@
 import * as fs from 'fs';
 import { Token } from './Token';
 import lex from './Lexer';
+import render from './render';
 
 export default function printToken(tokens: Token[], indent: string = '') {
   tokens.forEach((token) => {
@@ -23,7 +24,8 @@ export default function printToken(tokens: Token[], indent: string = '') {
 function test() {
   const src = fs.readFileSync('./sample/test1.md', 'utf-8');
   const tokens = lex(src);
-  printToken(tokens);
+  // printToken(tokens);
+  console.log(render(tokens));
 }
 
 test();

@@ -13,6 +13,7 @@
   "author": "langley0@naver.com",
   "license": "ISC",
   "dependencies": {
+    "highlight.js": "^10.2.0",
     "react-syntax-highlighter": "^13.5.3"
   },
   "devDependencies": {
