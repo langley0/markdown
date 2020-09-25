@@ -18,13 +18,13 @@ export default function render(tokens: Token[], indent: string = ''): string {
         ? hljs.highlight(token.options!.language, token.text).value
         : hljs.highlightAuto(token.text).value;
 
-      return `${indent}<pre class="hljs">\n${highlightedCode}\n${indent}</pre>`;
+      return `${indent}<pre class="hljs codebox">\n${highlightedCode}\n${indent}</pre>`;
     }
     if (token.type === 'codespan') {
       return `${indent}<code>${renderContent(token)}</code>`;
     }
     if (token.type === 'em') {
-      return `${indent}<em>${renderContent(token)}/em>`;
+      return `${indent}<em>${renderContent(token)}</em>`;
     }
     if (token.type === 'strong') {
       return `${indent}<strong>${renderContent(token)}</strong>`;

@@ -21,11 +21,15 @@ function getLine(src: string): string | null {
   return null;
 }
 
+function pre(src: string): string {
+  return src.replace(/\r\n/g, '\n').replace(/\t/g, '  ');
+}
+
 function frontmatter(origin: string): FrontmatterResult | null {
   const rule = /^ *(\w+) *: *([\s\S]*\S) *\n+$/;
   const variables: {[key:string]: string } = {};
 
-  let src = origin.trimStart();
+  let src = pre(origin).trimStart();
   const open = getLine(src);
   if (open === null) { return null; }
   if (open.replace(/\s/gm, '') !== '---') { return null; }

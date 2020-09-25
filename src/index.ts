@@ -1,5 +1,6 @@
 import lex from './Lexer';
 import render from './render';
+import frontmatter from './frontmatter';
 
 const html = (src: string): string => {
   const tokens = lex(src);
@@ -11,4 +12,5 @@ export {
   html,
   lex,
   render,
+  frontmatter,
 };
